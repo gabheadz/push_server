@@ -1,0 +1,23 @@
+{
+  "name": "push_server",
+  "version": "0.0.1-SNAPSHOT",
+  "author": {
+    "name": "Gabriel Martinez",
+    "email": "gabriel.martinez@proteccion.com.co"
+  },
+  "description": "servidor de notificaciones push para apps de proteccion",
+  "repository": {
+    "url": "https://vostpmde37.proteccion.com.co:10443/ARQ_Referencia/push_server.git"
+  },
+  "license": "",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "express": "~4.15.2",
+    "lodash": "^4.17.4",
+    "socket.io": "^2.0.3"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
