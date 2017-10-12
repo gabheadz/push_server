@@ -38,7 +38,7 @@ Simple server for pushing notifications to webclients.
 
 ## Publisher 
 
-Publisher is a role, backend or system which needs to send messages to webclients.
+The publisher as a role, can be implemented by any backend or system which needs to send messages to webclients.
 
 Publishers do this by calling ```/publish``` on the push server, the body contains the payload or message:
 
