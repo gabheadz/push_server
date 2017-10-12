@@ -4,8 +4,12 @@ var server = require('http').Server(app);
 var bodyParser = require('body-parser');
 
 var io = require('socket.io')(server);
+var redis = require('socket.io-redis');
+
 var sessions = require('./appmodules/sessions');
 var publisher = require('./appmodules/publisher');
+
+io.adapter(redis({ host: 'localhost', port: 6379 }));
 
 // for parsing application/json
 app.use(bodyParser.json()); 
