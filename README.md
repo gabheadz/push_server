@@ -1,123 +1,70 @@
-# Servidor de Notificaciones PUSH 
+# Push server for webclients
 
-Este es el componente de Servidor para las notificaciones push de las aplicaciones que cumplen
-la Arquitectura de Referencia de Protección.
+Simple server for pushing notifications to webclients.
 
-## Arquitectura
+## Running Push Server
 
-La arquitectura definica es la siguiente:
+1) Install dependencies
 
-- **Cliente web**: esta es una aplicación web que desea recibir las 
-    notificaciones vía websockets. En la arquitectura de referencia de Protección,
-    este rol lo tiene la parte UI (angular o React) de la Micro-Aplicación.
-- **Backend notificaciones**: este es el servidor de notificaciones quien 
-    enviará notificaciones a los clientes web (este proyecto).
-- **Notificador**: este es quien cumple el rol de notificar o publicar mensajes 
-    que serán enviados al cliente web y quien se vale del *Backend de notificaciones* 
-    como intermediario. En la arquitectura de referencia de Protección, este rol lo
-    tiene la parte API Java de la Micro-aplicación.
+```
+npm install
+```
+
+2) Run server
+
+```
+npm start
+```
 
 
-Este proyecto implementa el **Backend notificaciones**.
+## Web Client Configuration
 
-## Guia Rápida
-
-Esta guia indica como desplegar el **Backend Notificaciones**.
-
-1. Si la imagen docker no está construida.
-
-    a) Clonar el repositorio
-
-    ```
-    git clone https://vostpmde37.proteccion.com.co:10443/ARQ_Referencia/push_server.git
-    ```
-    
-    b) Construir la imagen
-    
-    ```
-    docker build -t arq_ref/push_server .
-    ```
-    
-    c) Ejecutar la imagen
-
-    ```
-    docker run -p 3000:3000 -d arq_ref/push_server
-    ```
-
-2. Si la imagen docker ya esta construida.
-
-    ```
-    docker run -p 3000:3000 -d arq_ref/push_server
-    ```
-
-### Guia adicional:  Cliente Web
-
-Para que un cliente web pueda recibir notificaciones debe realizarse la siguiente
-configuracion:
-
-1. Agregar la referencia a la libreria **Socket.io**
+1. Add **Socket.io** library:
 
     ```
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
     ```
 
-2. Establecer conexion websocket con el **Backend-notificaciones** y suscribirse
-   a eventos.
+2. Establish comunication with push server
 
     ```
     <script>
-        var socket = io('http://localhost:3000'); //url del push server
-        socket.emit('registrar', 'my-key');
-        socket.on('estado.registro', function(msg){
-            if (msg.estado == 0) 
-                //Exito: Cliente web subscrito 
+	//connect with push server
+	var socket = io('http://localhost:3000'); 
+	
+	//sign up event. Requieres a string to act as an identifier of the webclient
+	socket.emit('signup', 'my-key');
+        
+	//event fired after signup
+	socket.on('signup.status', function(msg){
+            if (msg.status == 0) 
+	        //OK: webclient connected and ready to receive notifications
             else 
-                //Error: Cliente web no se ha suscrito.
+		//Error: webclient not connected.
         });
-        socket.on('notification.message', function(msg){
-          //Aqui recibira todas las notificaciones. [msg] contiene el mensaje publicado.
+	
+	//event fired when receiving push notification
+        socket.on('push.notification', function(msg){
+          //msg is the payload in Json format
         });    
     </script>
     ```
+   
 
-Donde:
+## Publisher 
 
-- **registrar** es el evento que el cliente web va a emitirle al backend de 
-    notificaciones para suscribirse ó "darse de alta".
-    - **my-key** es una llave única que este cliente web usará para identificarse 
-        (se recomienda usar el JWT que la aplicación tiene como resultado de la autenticación).
+The publisher as a role, can be implemented by any backend or system which needs to send messages to webclients.
 
-- **estado.registro** es el evento al que se va a suscribir el cliente web para 
-    esperar confirmación sobre si la suscripción fue exitosa o no.
-    - **msg** es el cuerpo de la confirmación de la suscripción.
-
-- **notification.message** es el evento al que se va a suscribir el cliente web para 
-    recibir las notificaciones enviadas.
-    - **msg** es el cuerpo de la notificacion recibida.
-    
-
-### Guia adicional:   Notificador
-
-El notificador enviará mensajes al endpoint Rest ```/publicar``` del **Backend notificaciones**,
-enviando en el cuerpo de la petición, un payload como el que se describe a continuación:
+Publishers do this by calling ```/publish``` on the push server, the body contains the payload or message:
 
 ```
-POST /publicar HTTP/1.1
+POST /publish HTTP/1.1
 Host: localhost:3000
 Content-Type: application/json
 Cache-Control: no-cache
 
 {
-	"destino": "my-key",
-	"mensaje": "La solicitud XYZ fue grabada exitosamente."
+	"clientKey": "the-client-key", //the key that identifies a webclient
+	"payload": "This is the message to be delivered."
 }
 ```
-
-Donde:
-
-- **my-key** es un key que identifica a un cliente web, al cual se le desea 
-    enviar la notificación. El notificador debe enviar aqui el id que identifica 
-    el JWT que el cliente web siempre envia al API Java, y que se puede obtener
-    por Jano.
-- **mensaje** es el mensaje propiamente dicho que se le desea enviar al cliente web.
-
