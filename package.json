@@ -3,11 +3,11 @@
   "version": "0.0.1-SNAPSHOT",
   "author": {
     "name": "Gabriel Martinez",
-    "email": "gabriel.martinez@proteccion.com.co"
+    "email": "gabrieljm@gmail.com"
   },
-  "description": "servidor de notificaciones push para apps de proteccion",
+  "description": "node server app for push notifications to webclients via websockets",
   "repository": {
-    "url": "https://vostpmde37.proteccion.com.co:10443/ARQ_Referencia/push_server.git"
+    "url": "https://github.com/gabheadz/push_server.git"
   },
   "license": "",
   "dependencies": {
