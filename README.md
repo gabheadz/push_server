@@ -2,6 +2,21 @@
 
 Simple server for pushing notifications to webclients.
 
+## Running Push Server
+
+1) Install dependencies
+
+```
+npm install
+```
+
+2) Run server
+
+```
+npm start
+```
+
+
 ## Web Client Configuration
 
 1. Add **Socket.io** library:
