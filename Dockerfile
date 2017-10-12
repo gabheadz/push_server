@@ -1,5 +1,5 @@
 FROM node:latest
-MAINTAINER Gabriel Martinez <gabriel.martinez@proteccion.com.co>
+MAINTAINER Gabriel Martinez <gabrieljm@gmail.com>
 
 WORKDIR /usr/src/app
 
