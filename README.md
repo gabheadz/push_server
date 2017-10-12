@@ -1,78 +1,26 @@
-# Servidor de Notificaciones PUSH 
+# Push server for webclients
 
-Este es el componente de Servidor para las notificaciones push de las aplicaciones que cumplen
-la Arquitectura de Referencia de Protección.
+Simple server for pushing notifications to webclients.
 
-## Arquitectura
+## Web Client Configuration
 
-La arquitectura definica es la siguiente:
-
-- **Cliente web**: esta es una aplicación web que desea recibir las 
-    notificaciones vía websockets. En la arquitectura de referencia de Protección,
-    este rol lo tiene la parte UI (angular o React) de la Micro-Aplicación.
-- **Backend notificaciones**: este es el servidor de notificaciones quien 
-    enviará notificaciones a los clientes web (este proyecto).
-- **Notificador**: este es quien cumple el rol de notificar o publicar mensajes 
-    que serán enviados al cliente web y quien se vale del *Backend de notificaciones* 
-    como intermediario. En la arquitectura de referencia de Protección, este rol lo
-    tiene la parte API Java de la Micro-aplicación.
-
-
-Este proyecto implementa el **Backend notificaciones**.
-
-## Guia Rápida
-
-Esta guia indica como desplegar el **Backend Notificaciones**.
-
-1. Si la imagen docker no está construida.
-
-    a) Clonar el repositorio
-
-    ```
-    git clone https://vostpmde37.proteccion.com.co:10443/ARQ_Referencia/push_server.git
-    ```
-    
-    b) Construir la imagen
-    
-    ```
-    docker build -t arq_ref/push_server .
-    ```
-    
-    c) Ejecutar la imagen
-
-    ```
-    docker run -p 3000:3000 -d arq_ref/push_server
-    ```
-
-2. Si la imagen docker ya esta construida.
-
-    ```
-    docker run -p 3000:3000 -d arq_ref/push_server
-    ```
-
-### Guia adicional:  Cliente Web
-
-Para que un cliente web pueda recibir notificaciones debe realizarse la siguiente
-configuracion:
-
-1. Agregar la referencia a la libreria **Socket.io**
+1. Add **Socket.io** library:
 
     ```
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
     ```
 
-2. Establecer conexion websocket con el **Backend-notificaciones** y suscribirse
-   a eventos.
+2. Establish comunication with push server
 
     ```
     <script>
-        var socket = io('http://localhost:3000'); //url del push server
-        socket.emit('registrar', 'my-key');
-        socket.on('estado.registro', function(msg){
+        var socket = io('http://localhost:3000'); 
+        socket.emit('signup', 'my-key');
+        socket.on('signup.result', function(msg){
             if (msg.estado == 0) 
-                //Exito: Cliente web subscrito 
+                //OK: webclient connected and ready to receive notifications
             else 
-                //Error: Cliente web no se ha suscrito.
+                //Error: webclient not connected.
         });
         socket.on('notification.message', function(msg){
           //Aqui recibira todas las notificaciones. [msg] contiene el mensaje publicado.
