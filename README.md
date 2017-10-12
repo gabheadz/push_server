@@ -14,16 +14,23 @@ Simple server for pushing notifications to webclients.
 
     ```
     <script>
-        var socket = io('http://localhost:3000'); 
-        socket.emit('signup', 'my-key');
-        socket.on('signup.result', function(msg){
-            if (msg.estado == 0) 
+        //connect with push server
+	var socket = io('http://localhost:3000'); 
+	
+        //sign up and send data to act as an identifier of the webclient
+	socket.emit('signup', 'my-key');
+        
+	//event fired after signup
+	socket.on('signup.status', function(msg){
+            if (msg.status == 0) 
                 //OK: webclient connected and ready to receive notifications
             else 
                 //Error: webclient not connected.
         });
-        socket.on('notification.message', function(msg){
-          //Aqui recibira todas las notificaciones. [msg] contiene el mensaje publicado.
+	
+	//event fired when receiving push notification
+        socket.on('push.notification', function(msg){
+          //msg is the payload in Json format
         });    
     </script>
     ```
