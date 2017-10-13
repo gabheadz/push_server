@@ -1,6 +1,11 @@
 # Push server for webclients
 
-Simple server for pushing notifications to webclients.
+Simple server for pushing notifications to webclients.  
+
+Uses [socket-io-sticky-session](https://github.com/wzrdtales/socket-io-sticky-session) to work
+in cluster and proxy environments.
+
+Requires redis for socket session replication between nodes.
 
 ## Running Push Server
 
